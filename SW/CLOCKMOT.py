@@ -7,194 +7,209 @@
 
 
 #uncomment for debbug purposes
-#import logging
-#logging.basicConfig(level=logging.DEBUG) 
+import logging
+logging.basicConfig(level=logging.DEBUG) 
 
 import sys
 import time
-from pymlab import config
-
-
+import spidev       # SPI binding
+import pylirc       # infrared receiver binding
 
 #### Script Arguments ###############################################
 
-if len(sys.argv) < 2:
+if len(sys.argv) == 2:
+    SPEED = eval(sys.argv[1])
+
+else:
     sys.stderr.write("Invalid number of arguments.\n")
-    sys.stderr.write("Usage: %s PORT ADDRESS SPEED MOVE_DISTANCE\n" % (sys.argv[0], ))
+    sys.stderr.write("Usage: %s BASE_SPEED (in steps/s)\n" % (sys.argv[0], ))
     sys.exit(1)
-
-elif len(sys.argv) == 2:
-    PORT = eval(sys.argv[1])
-    SPEED = 5
-    DISTANCE = 50
-
-elif len(sys.argv) == 3:
-    SPEED = eval(sys.argv[2])
-    DISTANCE = 100
-
-elif len(sys.argv) == 4:
-    SPEED = eval(sys.argv[2])
-    DISTANCE = eval(sys.argv[3])
-
-else: 
-    PORT = 0
-    SPEED = 10
-    DISTANCE = 50
 
 
 class axis:
-    def __init__(self, SPI_CS, Direction, StepsPerUnit):
+    def __init__(self, SPI_handler, Direction, StepsPerUnit):
         ' One axis of robot '
-        self.CS = SPI_CS
+        self.spi = SPI_handler
         self.Dir = Direction
         self.SPU = StepsPerUnit
         self.Reset()
+        self.Initialize()
 
     def Reset(self):
-        ' Reset Axis and set default parameters for H-bridge '
-        spi.SPI_write_byte(self.CS, 0xC0)      # reset
-#        spi.SPI_write_byte(self.CS, 0x14)      # Stall Treshold setup
-#        spi.SPI_write_byte(self.CS, 0xFF)  
-#        spi.SPI_write_byte(self.CS, 0x13)      # Over Current Treshold setup 
-#        spi.SPI_write_byte(self.CS, 0xFF)  
-        spi.SPI_write_byte(self.CS, 0x15)      # Full Step speed 
-        spi.SPI_write_byte(self.CS, 0xFF)
-        spi.SPI_write_byte(self.CS, 0xFF) 
-        spi.SPI_write_byte(self.CS, 0x05)      # ACC 
-        spi.SPI_write_byte(self.CS, 0x00)
-        spi.SPI_write_byte(self.CS, 0x10) 
-        spi.SPI_write_byte(self.CS, 0x06)      # DEC 
-        spi.SPI_write_byte(self.CS, 0x00)
-        spi.SPI_write_byte(self.CS, 0x10) 
-        spi.SPI_write_byte(self.CS, 0x0A)      # KVAL_RUN
-        spi.SPI_write_byte(self.CS, 0xFF)
-        spi.SPI_write_byte(self.CS, 0x0B)      # KVAL_ACC
-        spi.SPI_write_byte(self.CS, 0xFF)
-        spi.SPI_write_byte(self.CS, 0x0C)      # KVAL_DEC
-        spi.SPI_write_byte(self.CS, 0xFF)
-        spi.SPI_write_byte(self.CS, 0x18)      # CONFIG
-        spi.SPI_write_byte(self.CS, 0b00111000)
-        spi.SPI_write_byte(self.CS, 0b00000000)
+        'Reset the Axis'
+        self.spi.xfer([0xC0])      # reset
+
+    def Initialize(self):
+        'set default parameters for H-bridge '
+#        self.spi.xfer( 0x14)      # Stall Treshold setup
+#        self.spi.xfer( 0xFF)  
+#        self.spi.xfer( 0x13)      # Over Current Treshold setup 
+#        self.spi.xfer( 0xFF)  
+        self.spi.xfer([0x15])      # Full Step speed 
+        self.spi.xfer([0xFF])
+        self.spi.xfer([0xFF]) 
+        self.spi.xfer([0x05])      # ACC 
+        self.spi.xfer([0x00])
+        self.spi.xfer([0x10]) 
+        self.spi.xfer([0x06])      # DEC 
+        self.spi.xfer([0x00])
+        self.spi.xfer([0x10]) 
+        self.spi.xfer([0x0A])      # KVAL_RUN
+        self.spi.xfer([0x50])
+        self.spi.xfer([0x0B])      # KVAL_ACC
+        self.spi.xfer([0x50])
+        self.spi.xfer([0x0C])      # KVAL_DEC
+        self.spi.xfer([0x50])
+        self.spi.xfer([0x18])      # CONFIG
+        self.spi.xfer([0b00111000])
+        self.spi.xfer([0b00000110])
       
     def MaxSpeed(self, speed):
-        ' Setup of maximum speed '
-        spi.SPI_write_byte(self.CS, 0x07)       # Max Speed setup 
-        spi.SPI_write_byte(self.CS, 0x00)
-        spi.SPI_write_byte(self.CS, speed)  
+        'Setup of maximum speed in steps/s'
+        speed_value = int(speed / 15.25)
+        if (speed_value == 0):
+            speed_value = 1
+        print hex(speed_value)
+
+        data = [(speed_value >> i & 0xff) for i in (16,8,0)]
+        self.spi.xfer([data[0]])       # Max Speed setup 
+        self.spi.xfer([data[1]])
+        self.spi.xfer([data[2]])
+        return (speed_value * 15.25)
 
     def ReleaseSW(self):
         ' Go away from Limit Switch '
         while self.ReadStatusBit(2) == 1:           # is Limit Switch ON ?
-            spi.SPI_write_byte(self.CS, 0x92 | (~self.Dir & 1))     # release SW 
-            while self.IsBusy():
+            self.spi.xfer([0x92 | (~self.Dir & 1)])     # release SW 
+            while self.GetStatus()['BUSY']:
                 pass
             self.MoveWait(10)           # move 10 units away
  
     def GoZero(self, speed):
         ' Go to Zero position '
         self.ReleaseSW()
-
-        spi.SPI_write_byte(self.CS, 0x82 | (self.Dir & 1))       # Go to Zero
-        spi.SPI_write_byte(self.CS, 0x00)
-        spi.SPI_write_byte(self.CS, speed)  
-        while self.IsBusy():
+        self.spi.xfer([0x82 | (self.Dir & 1)])       # Go to Zero
+        self.spi.xfer([0x00])
+        self.spi.xfer([speed])  
+        while self.GetStatus()['BUSY']:
             pass
         time.sleep(0.3)
         self.ReleaseSW()
+
+    def GetStatus(self):
+        #self.spi.xfer([0b11010000])  # Get status command from datasheet - does not work for uknown rasons
+        self.spi.xfer([0x39])       # Gotparam  command on status register
+        data = self.spi.readbytes(1)
+        data = data + self.spi.readbytes(1)
+
+        status = dict([('SCK_MOD',data[0] & 0x80 == 0x80),  #The SCK_MOD bit is an active high flag indicating that the device is working in Step-clock mode. In this case the step-clock signal should be provided through the STCK input pin. The DIR bit indicates the current motor direction
+                    ('STEP_LOSS_B',data[0] & 0x40 == 0x40),
+                    ('STEP_LOSS_A',data[0] & 0x20 == 0x20),
+                    ('OCD',data[0] & 0x10 == 0x10),
+                    ('TH_SD',data[0] & 0x08 == 0x08),
+                    ('TH_WRN',data[0] & 0x04 == 0x04),
+                    ('UVLO',data[0] & 0x02 == 0x02),
+                    ('WRONG_CMD',data[0] & 0x01 == 0x01),   #The NOTPERF_CMD and WRONG_CMD flags are active high and indicate, respectively, that the command received by SPI cannot be performed or does not exist at all.
+                    ('NOTPERF_CMD',data[1] & 0x80 == 0x80),
+                    ('MOT_STATUS',data[1] & 0x60),
+                    ('DIR',data[1] & 0x10 == 0x10),
+                    ('SW_EVN',data[1] & 0x08 == 0x08),
+                    ('SW_F',data[1] & 0x04 == 0x04),        #The SW_F flag reports the SW input status (low for open and high for closed).
+                    ('BUSY',data[1] & 0x02 != 0x02),
+                    ('HIZ',data[1] & 0x01 == 0x01)])
+        return status
 
     def Move(self, units):
         ' Move some distance units from current position '
         steps = units * self.SPU  # translate units to steps 
         if steps > 0:                                          # look for direction
-            spi.SPI_write_byte(self.CS, 0x40 | (~self.Dir & 1))       
+            self.spi.xfer([0x40 | (~self.Dir & 1)])       
         else:
-            spi.SPI_write_byte(self.CS, 0x40 | (self.Dir & 1)) 
+            self.spi.xfer([0x40 | (self.Dir & 1)]) 
         steps = int(abs(steps))     
-        spi.SPI_write_byte(self.CS, (steps >> 16) & 0xFF)
-        spi.SPI_write_byte(self.CS, (steps >> 8) & 0xFF)
-        spi.SPI_write_byte(self.CS, steps & 0xFF)
+        self.spi.xfer([(steps >> 16) & 0xFF])
+        self.spi.xfer([(steps >> 8) & 0xFF])
+        self.spi.xfer([steps & 0xFF])
+
+    def Run(self, direction, speed):
+        speed_value = int(speed / 0.015)
+        print speed_value
+
+        data = [0b01010000 + direction]
+        data = data +[(speed_value >> i & 0xff) for i in (16,8,0)]
+        self.spi.xfer([data[0]])       # Max Speed setup 
+        self.spi.xfer([data[1]])
+        self.spi.xfer([data[2]])  
+        self.spi.xfer([data[3]])
+        return (speed_value * 0.015)
 
     def MoveWait(self, units):
         ' Move some distance units from current position and wait for execution '
         self.Move(units)
-        while self.IsBusy():
+        while self.GetStatus()['BUSY']:
             pass
+            time.sleep(0.8)
 
-    def Float(self):
+    def Float(self, hard = False):
         ' switch H-bridge to High impedance state '
-        spi.SPI_write_byte(self.CS, 0xA0)
-
-    def ReadStatusBit(self, bit):
-        ' Report given status bit '
-        spi.SPI_write_byte(self.CS, 0x39)   # Read from address 0x19 (STATUS)
-        spi.SPI_write_byte(self.CS, 0x00)
-        data0 = spi.SPI_read_byte()           # 1st byte
-        spi.SPI_write_byte(self.CS, 0x00)
-        data1 = spi.SPI_read_byte()           # 2nd byte
-        #print hex(data0), hex(data1)
-        if bit > 7:                                   # extract requested bit
-            OutputBit = (data0 >> (bit - 8)) & 1
+        if (hard == False):
+            self.spi.xfer([0xA0])
         else:
-            OutputBit = (data1 >> bit) & 1        
-        return OutputBit
+            self.spi.xfer([0xA8])
 
-    
-    def IsBusy(self):
-        """ Return True if tehre are motion """
-        if self.ReadStatusBit(1) == 1:
-            return False
-        else:
-            return True
 
 # End Class axis --------------------------------------------------
 
+print "Clock motor control script started. \r\n"
+print "Requested speed is: %f steps/s" % SPEED
 
-
-cfg = config.Config(
-    i2c = {
-        "port": 1,
-    },
-
-    bus = [
-        { 
-        "name":"spi", 
-        "type":"i2cspi", 
-        "address": 0x2e,
-        },
-    ],
-)
-
-
-cfg.initialize()
-
-print "Stepper motor control test started. \r\n"
-print "Max motor speed: %d " % SPEED
-print "Distance to run: %d " % DISTANCE
-
-spi = cfg.get_device("spi")
-
-spi.route()
+pylirc.init("pylirc", "/home/odroid/conf")
 
 try:
-    print "SPI configuration.."
-    spi.SPI_config(spi.I2CSPI_MSB_FIRST| spi.I2CSPI_MODE_CLK_IDLE_HIGH_DATA_EDGE_TRAILING| spi.I2CSPI_CLK_461kHz)
+    print "Configuring SPI.."
+    spi = spidev.SpiDev() # create a spi object
+    spi.open(0, 0) # open spi port 0, device (CS) 0 
+    spi.mode = 0b01
+    spi.lsbfirst = False
+    spi.bits_per_word = 8
+    spi.cshigh = False
+    spi.max_speed_hz = 100000
+    #spi.SPI_config(spi.I2CSPI_MSB_FIRST| spi.I2CSPI_MODE_CLK_IDLE_HIGH_DATA_EDGE_TRAILING| spi.I2CSPI_CLK_461kHz)
     time.sleep(1)
 
-    print "Axis inicialization"
-    X = axis(spi.I2CSPI_SS0, 0, 641)    # set Number of Steps per axis Unit and set Direction of Rotation
-    X.MaxSpeed(SPEED)                      # set maximal motor speed 
+    print "Configuring stepper motor.."
+    X = axis(spi, 0, 1)    # set Number of Steps per axis Unit and set Direction of Rotation
+    maximum_speed = X.MaxSpeed(200.0)
+    X.GetStatus()
 
-    print "Axis is running"
+    print "Motor speed limit is: %f steps/s" % maximum_speed
 
-    for i in range(5):
-        print i
-        X.MoveWait(DISTANCE)      # move forward and wait for motor stop
-        print "Changing direction of rotation.."
-        X.MoveWait(-DISTANCE)     # move backward and wait for motor stop
-        print "Changing direction of rotation.."
+    print "Waiting for IR command.."
+    while True:                    # set maximal motor speed 
+        key = pylirc.nextcode()     ## preccessing the IR remote control commands.
 
-    X.Float()   # release power
+        if key == ['start']:
+            real_speed = X.Run(1, SPEED)
+            print "Motor running at: %f steps/s" % real_speed
 
+        if key == ['faster']:
+            real_speed = X.Run(1, SPEED * 1.2)      # runnig the motor at 120% of the base motor speed
+            print "Motor running at: %f steps/s" % real_speed
 
-finally:
+        if key == ['slower']:
+            real_speed = X.Run(1, SPEED * 0.8)
+            print "Motor running at: %f steps/s" % real_speed
+
+        if key == ['stop']:
+            X.Float(hard=False)   # release power
+            print "Stopping the motor."
+
+except KeyboardInterrupt:
     print "stop"
+    X.Float(hard=False)   # release power
+    sys.exit(0)
+
+except Exception, e:
+    X.Float(hard=False)   # release power
+    print >> sys.stderr, "Exception: %s" % str(e)
+    sys.exit(1)
