@@ -34,7 +34,7 @@ plbase(pocet_der1,pocet_der2,radidus_hrany,vzdalenost_der,vzdalenost_od_okraje,p
                 //složí k posunu otvoru v násobku děr
                     posun_p1=10;    
                     translate([posun_p1*vzdalenost_der,0,0])   
-                        USBI2C01A(tloustka_bocnice,vzdalenost_der);         
+                        UNIPOWER03A(tloustka_bocnice,vzdalenost_der);         
     
                     posun_p2=9.5;    
                     translate([posun_p2*vzdalenost_der,0,0])   
@@ -46,55 +46,54 @@ plbase(pocet_der1,pocet_der2,radidus_hrany,vzdalenost_der,vzdalenost_od_okraje,p
                     
                 }
 }
-}
 
 
-//Vytvoreni zadniho celicka krabicky
-//--------------------------------------------------------
-module celicko_zadni()
-{
-translate([0,0,0])
-difference() {
 
-    
-pocet_der_dane_strany=15;
-posun_od_kraje=1;    
-USBI2C01A(tloustka_celicka,pocet_der_dane_strany,posun_od_kraje,vzdalenost_der,vyska_listy); 
-}
-}
+
+
+
+
 
 
 //Vytvoreni leveho celicka krabicky
 //--------------------------------------------------------
-module celicko_leve()
-{
-translate([0,0,0])
-difference() {
-celicko (vyska,zapust,vule_vysky_celicka,pocet_der1,vzdalenost_der,vule_delky_celicka,tloustka_celicka,vule_tlousky,vyska_listy);
-       
-pocet_der_dane_strany=11;
-posun_od_kraje=1;
+
+
+
+  translate([-((pocet_der2-1)*vzdalenost_der)/2-vzdalenost_od_okraje-tloustka_bocnice/2,(pocet_der1-1)*vzdalenost_der,-(vyska_bocnice/2)])
+                {
+                //složí k posunu otvoru v násobku děr
+                    posun_l1=10;    
+                    translate([-posun_l1*vzdalenost_der,0,0])  
+                    rotate(a=[0,0,-90])  
+                        USBI2C01A(tloustka_bocnice,vzdalenost_der);         
     
-RS232SINGLE01A(tloustka_celicka,pocet_der_dane_strany,posun_od_kraje,vzdalenost_der,vyska_listy);
-}
-}
+                    posun_l2=10;    
+                    
+                    translate([-posun_l2*vzdalenost_der,0,0])  
+                    rotate(a=[0,0,-90]) 
+                        I2CDIFF01A(tloustka_bocnice,vzdalenost_der);
+                    
+                    posun_l3=10;    
+                    translate([-posun_l3*vzdalenost_der,0,0])  
+                    rotate(a=[0,0,-90])
+                        MIC338(tloustka_bocnice,vzdalenost_der,vyska_bocnice);
+                    
+                    posun_l4=10;    
+                    translate([-posun_l4*vzdalenost_der,0,0]) 
+                   rotate(a=[0,0,-90])  
+                      UNIPOWER03A(tloustka_bocnice,vzdalenost_der);
+                    
+                    
+                }
+
+
 
 
 
 //Vytvoreni praveho celicka krabicky
 //--------------------------------------------------------
-module celicko_prave()
-{
-translate([0,0,0])
-difference() {
-celicko (vyska,zapust,vule_vysky_celicka,pocet_der1,vzdalenost_der,vule_delky_celicka,tloustka_celicka,vule_tlousky,vyska_listy);
-       
-MIC338(tloustka_celicka,vyska,zapust,vule_vysky_celicka);
-  
-pocet_der_dane_strany=11;
-posun_od_kraje=1;    
-UNIPOWER02A(tloustka_celicka,pocet_der_dane_strany,posun_od_kraje,vzdalenost_der,vyska_listy);
-}
-}
 
+
+}
 }
