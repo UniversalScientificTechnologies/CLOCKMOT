@@ -64,25 +64,26 @@ plbase(pocet_der1,pocet_der2,radidus_hrany,vzdalenost_der,vzdalenost_od_okraje,p
                 {
                 //složí k posunu otvoru v násobku děr
                     posun_l1=10;    
-                    translate([-posun_l1*vzdalenost_der,0,0])  
+                    translate([0,-posun_l1*vzdalenost_der,0])  
                     rotate(a=[0,0,-90])  
                         USBI2C01A(tloustka_bocnice,vzdalenost_der);         
     
                     posun_l2=10;    
                     
-                    translate([-posun_l2*vzdalenost_der,0,0])  
+                    translate([0,-posun_l2*vzdalenost_der,0])    
                     rotate(a=[0,0,-90]) 
                         I2CDIFF01A(tloustka_bocnice,vzdalenost_der);
                     
                     posun_l3=10;    
-                    translate([-posun_l3*vzdalenost_der,0,0])  
+                   translate([0,-posun_l3*vzdalenost_der,0])    
                     rotate(a=[0,0,-90])
                         MIC338(tloustka_bocnice,vzdalenost_der,vyska_bocnice);
                     
-                    posun_l4=10;    
-                    translate([-posun_l4*vzdalenost_der,0,0]) 
-                   rotate(a=[0,0,-90])  
-                      UNIPOWER03A(tloustka_bocnice,vzdalenost_der);
+                    posun_l4=0;    
+                    translate([0,-posun_l4*vzdalenost_der,0])   
+                  
+                    rotate(a=[0,0,-90])  
+                      CHLADICI_OTVORY(tloustka_bocnice,vzdalenost_der,pocet_der1-1,vyska_bocnice);
                     
                     
                 }
@@ -93,6 +94,32 @@ plbase(pocet_der1,pocet_der2,radidus_hrany,vzdalenost_der,vzdalenost_od_okraje,p
 
 //Vytvoreni praveho celicka krabicky
 //--------------------------------------------------------
+translate([+((pocet_der2-1)*vzdalenost_der)/2+vzdalenost_od_okraje+tloustka_bocnice/2,0,-(vyska_bocnice/2)])
+                {
+                //složí k posunu otvoru v násobku děr
+                    posun_pr1=10;    
+                    translate([0,posun_pr1*vzdalenost_der,0])  
+                    rotate(a=[0,0,90])  
+                        UNIPOWER03A(tloustka_bocnice,vzdalenost_der);         
+    
+                    posun_pr2=10;    
+                    
+                    translate([0,posun_pr2*vzdalenost_der,0])
+                    rotate(a=[0,0,90]) 
+                        I2CDIFF01A(tloustka_bocnice,vzdalenost_der);
+                    
+                    posun_pr3=10;    
+                    translate([0,posun_pr3*vzdalenost_der,0])
+                    rotate(a=[0,0,90])
+                        MIC338(tloustka_bocnice,vzdalenost_der,vyska_bocnice);
+                    
+                    posun_pr4=0;    
+                    translate([0,posun_pr4*vzdalenost_der,0])
+                   rotate(a=[0,0,90])  
+                      CHLADICI_OTVORY(tloustka_bocnice,vzdalenost_der,pocet_der1-1,vyska_bocnice);
+                    
+                    
+                }
 
 
 }

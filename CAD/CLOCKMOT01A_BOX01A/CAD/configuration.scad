@@ -1,5 +1,5 @@
 //Název boxu (zařízení)
-box_jmeno="BASEBOX02A";
+box_jmeno="CLOCKMOT01A";
 
 //ALBASE1115
 //------------------------------------------------------------
