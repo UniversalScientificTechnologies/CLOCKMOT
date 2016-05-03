@@ -22,14 +22,14 @@ pocet_der2 = 14; //pocet der v ose x
 //------------------------------------------------------------
 //BOCNICE
 vyska_bocnice=40;
-tloustka_bocnice=1.8;
+tloustka_bocnice=3;
 
 //PLBASE PARAMETRY
 //------------------------------------------------------------
 tloustka_plbase = 2; //tloustka plbase
 prekryti_der=0.3; //sila materiálu, který překrývá díry
 
-plbase_tolerance_horni=0.0; //pro zvětšení tolerance aby tam šlo dát  horní čelíčko
+plbase_tolerance_horni=0.5; //pro zvětšení tolerance aby tam šlo dát  horní čelíčko
 
 //PRIPADNA VYSKA NOZICEK
 //------------------------------------------------------------
