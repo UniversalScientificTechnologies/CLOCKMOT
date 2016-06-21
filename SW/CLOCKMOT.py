@@ -179,28 +179,37 @@ try:
 
     print "Configuring stepper motor.."
     X = axis(spi, 0, 1)    # set Number of Steps per axis Unit and set Direction of Rotation
-    maximum_speed = X.MaxSpeed(200.0)
+    maximum_speed = X.MaxSpeed(100.0)
     X.GetStatus()
 
     print "Motor speed limit is: %f steps/s" % maximum_speed
+    running = False
 
     print "Waiting for IR command.."
     while True:                    # set maximal motor speed 
         key = pylirc.nextcode()     ## preccessing the IR remote control commands.
 
         if key == ['start']:
-            real_speed = X.Run(1, SPEED)
-            print "Motor running at: %f steps/s" % real_speed
+            running =  True
+            requested_speed = SPEED
 
         if key == ['faster']:
-            real_speed = X.Run(1, SPEED * 1.2)      # runnig the motor at 120% of the base motor speed
-            print "Motor running at: %f steps/s" % real_speed
+            running =  True
+            requested_speed = SPEED * 1.2      # runnig the motor at 120% of the base motor speed
 
         if key == ['slower']:
-            real_speed = X.Run(1, SPEED * 0.8)
-            print "Motor running at: %f steps/s" % real_speed
+            running =  True
+            requested_speed = SPEED * 0.8
 
         if key == ['stop']:
+            running =  False
+
+        time.sleep(0.1)
+
+        if running == True:
+            real_speed = X.Run(1, requested_speed)
+            print "Motor running at: %f steps/s" % real_speed
+        else:
             X.Float(hard=False)   # release power
             print "Stopping the motor."
 
