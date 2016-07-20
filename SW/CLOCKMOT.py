@@ -191,8 +191,6 @@ try:
 
         if key == ['start']:
             running =  True
-            X.Reset()
-            X.Initialize()
             requested_speed = SPEED
 
         if key == ['faster']:
@@ -212,6 +210,8 @@ try:
             real_speed = X.Run(1, requested_speed)
             print "Motor running at: %f steps/s" % real_speed
         else:
+            X.Reset()
+            X.Initialize()
             X.Float(hard=False)   # release power
             print "Stopping the motor."
 
