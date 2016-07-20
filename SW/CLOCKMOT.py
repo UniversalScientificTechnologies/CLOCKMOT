@@ -191,6 +191,8 @@ try:
 
         if key == ['start']:
             running =  True
+            X.Reset()
+            X.Initialize()
             requested_speed = SPEED
 
         if key == ['faster']:
