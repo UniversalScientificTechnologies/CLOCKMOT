@@ -44,6 +44,10 @@ plbase(pocet_der1,pocet_der2,radidus_hrany,vzdalenost_der,vzdalenost_od_okraje,p
                     translate([posun_p3*vzdalenost_der,0,0])   
                         MIC338(tloustka_bocnice,vzdalenost_der,vyska_bocnice);
                     
+                     posun_p4=2;    
+                    translate([posun_p4*vzdalenost_der,0,0])   
+                    IR(tloustka_bocnice,vyska_bocnice);     
+                    
                 }
 }
 
@@ -59,7 +63,15 @@ plbase(pocet_der1,pocet_der2,radidus_hrany,vzdalenost_der,vzdalenost_od_okraje,p
             translate([-posun_z1*vzdalenost_der,0,0])  
                 rotate(a=[0,0,180])  
                    IR(tloustka_bocnice,vyska_bocnice);       
-                     
+        posun_z2=0;    
+            translate([-posun_z2*vzdalenost_der,0,0])  
+                rotate(a=[0,0,180])  
+                   CHLADICI_OTVORY2(tloustka_bocnice,vzdalenost_der,pocet_der2-8,vyska_bocnice);
+
+        posun_z3=7.5;    
+            translate([-posun_z3*vzdalenost_der,0,0])  
+                rotate(a=[0,0,180])  
+                   CHLADICI_OTVORY2(tloustka_bocnice,vzdalenost_der,pocet_der2-9,vyska_bocnice);    
                     
      }
 
@@ -74,27 +86,27 @@ plbase(pocet_der1,pocet_der2,radidus_hrany,vzdalenost_der,vzdalenost_od_okraje,p
   translate([-((pocet_der2-1)*vzdalenost_der)/2-vzdalenost_od_okraje-tloustka_bocnice/2,(pocet_der1-1)*vzdalenost_der,-(vyska_bocnice/2)])
                 {
                 //složí k posunu otvoru v násobku děr
-                    posun_l1=3.5;    
+                    posun_l1=4.2;    
                     translate([0,-posun_l1*vzdalenost_der,0])  
                     rotate(a=[0,0,-90])  
                         IR(tloustka_bocnice,vyska_bocnice);         
     
-                    posun_l2=10;    
+                    posun_l2=10.5;    
                     
                     translate([0,-posun_l2*vzdalenost_der,0])    
                     rotate(a=[0,0,-90]) 
                         I2CDIFF01A(tloustka_bocnice,vzdalenost_der);
                     
-                    posun_l3=4.5;    
+                    posun_l3=5;    
                    translate([0,-posun_l3*vzdalenost_der,0])    
                     rotate(a=[0,0,-90])
-                        CHLADICI_OTVORY(tloustka_bocnice,vzdalenost_der,pocet_der1-6,vyska_bocnice);
+                        CHLADICI_OTVORY2(tloustka_bocnice,vzdalenost_der,pocet_der1-6,vyska_bocnice);
                     
                     posun_l4=0;    
                     translate([0,-posun_l4*vzdalenost_der,0])   
                   
                     rotate(a=[0,0,-90])  
-                      CHLADICI_OTVORY(tloustka_bocnice,vzdalenost_der,pocet_der1-6,vyska_bocnice);
+                      CHLADICI_OTVORY2(tloustka_bocnice,vzdalenost_der,pocet_der1-6,vyska_bocnice);
                     
                     
                 }
@@ -108,7 +120,7 @@ plbase(pocet_der1,pocet_der2,radidus_hrany,vzdalenost_der,vzdalenost_od_okraje,p
 translate([+((pocet_der2-1)*vzdalenost_der)/2+vzdalenost_od_okraje+tloustka_bocnice/2,0,-(vyska_bocnice/2)])
                 {
                 //složí k posunu otvoru v násobku děr
-                    posun_pr1=3.5;    
+                    posun_pr1=4.2;    
                     translate([0,posun_pr1*vzdalenost_der,0])  
                     rotate(a=[0,0,90])  
                         IR(tloustka_bocnice,vyska_bocnice);         
@@ -119,15 +131,15 @@ translate([+((pocet_der2-1)*vzdalenost_der)/2+vzdalenost_od_okraje+tloustka_bocn
                     rotate(a=[0,0,90]) 
                         I2CDIFF01A(tloustka_bocnice,vzdalenost_der);
                     
-                    posun_pr3=4.5;    
+                    posun_pr3=5;    
                     translate([0,posun_pr3*vzdalenost_der,0])
                     rotate(a=[0,0,90])
-                        CHLADICI_OTVORY(tloustka_bocnice,vzdalenost_der,pocet_der1-6,vyska_bocnice);
+                         CHLADICI_OTVORY2(tloustka_bocnice,vzdalenost_der,pocet_der1-6,vyska_bocnice);
                     
                     posun_pr4=0;    
                     translate([0,posun_pr4*vzdalenost_der,0])
                    rotate(a=[0,0,90])  
-                      CHLADICI_OTVORY(tloustka_bocnice,vzdalenost_der,pocet_der1-6,vyska_bocnice);
+                       CHLADICI_OTVORY2(tloustka_bocnice,vzdalenost_der,pocet_der1-6,vyska_bocnice);
                     
                     
                 }

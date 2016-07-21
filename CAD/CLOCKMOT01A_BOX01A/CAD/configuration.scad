@@ -11,7 +11,7 @@ radidus_hrany = 3; //radius zaobleni sloupku
 vzdalenost_od_okraje = 5.08; //vzdalenost stredu upevnovaci diry od kraje desky
 
 //mala hrana
-pocet_der1 = 9; //pocet děr v ose y
+pocet_der1 = 10; //pocet děr v ose y
 
 //velka hrana
 pocet_der2 = 14; //pocet der v ose x
