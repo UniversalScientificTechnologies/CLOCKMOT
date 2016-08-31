@@ -55,11 +55,11 @@ class axis:
         self.spi.xfer([0x00])
         self.spi.xfer([0x10]) 
         self.spi.xfer([0x0A])      # KVAL_RUN
-        self.spi.xfer([0x50])
+        self.spi.xfer([0x20])
         self.spi.xfer([0x0B])      # KVAL_ACC
-        self.spi.xfer([0x50])
+        self.spi.xfer([0x20])
         self.spi.xfer([0x0C])      # KVAL_DEC
-        self.spi.xfer([0x50])
+        self.spi.xfer([0x20])
         self.spi.xfer([0x18])      # CONFIG
         self.spi.xfer([0b00111000])
         self.spi.xfer([0b00000110])
@@ -199,7 +199,7 @@ try:
 
         if key == ['slower']:
             running =  True
-            requested_speed = SPEED * 0.8
+            requested_speed = SPEED * -1.2
 
         if key == ['stop']:
             running =  False
