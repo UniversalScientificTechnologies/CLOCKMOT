@@ -191,15 +191,18 @@ try:
 
         if key == ['start']:
             running =  True
+            direction = True
             requested_speed = SPEED
 
         if key == ['faster']:
             running =  True
+            direction = True
             requested_speed = SPEED * 1.2      # runnig the motor at 120% of the base motor speed
 
         if key == ['slower']:
             running =  True
-            requested_speed = SPEED * -1.2
+            direction = False
+            requested_speed = SPEED * 0.2
 
         if key == ['stop']:
             running =  False
@@ -207,7 +210,7 @@ try:
         time.sleep(0.1)
 
         if running == True:
-            real_speed = X.Run(1, requested_speed)
+            real_speed = X.Run(direction, requested_speed)
             print "Motor running at: %f steps/s" % real_speed
         else:
             X.Reset()
