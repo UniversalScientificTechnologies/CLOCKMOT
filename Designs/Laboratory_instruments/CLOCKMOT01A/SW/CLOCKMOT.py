@@ -61,8 +61,8 @@ class axis:
         self.spi.xfer([0x0C])      # KVAL_DEC
         self.spi.xfer([0x20])
         self.spi.xfer([0x18])      # CONFIG
-        self.spi.xfer([0b00111000])
-        self.spi.xfer([0b00000110])
+        self.spi.xfer([0b00111010])
+        self.spi.xfer([0b10001000])
       
     def MaxSpeed(self, speed):
         'Setup of maximum speed in steps/s'
