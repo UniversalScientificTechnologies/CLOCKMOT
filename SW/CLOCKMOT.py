@@ -55,14 +55,14 @@ class axis:
         self.spi.xfer([0x00])
         self.spi.xfer([0x10]) 
         self.spi.xfer([0x0A])      # KVAL_RUN
-        self.spi.xfer([0x20])
+        self.spi.xfer([0x05])
         self.spi.xfer([0x0B])      # KVAL_ACC
-        self.spi.xfer([0x20])
+        self.spi.xfer([0x05])
         self.spi.xfer([0x0C])      # KVAL_DEC
-        self.spi.xfer([0x20])
-        self.spi.xfer([0x18])      # CONFIG
-        self.spi.xfer([0b00111010])
-        self.spi.xfer([0b10001000])
+        self.spi.xfer([0x05])
+#        self.spi.xfer([0x18])      # CONFIG
+#        self.spi.xfer([0b00111010])
+#        self.spi.xfer([0b10001000])
       
     def MaxSpeed(self, speed):
         'Setup of maximum speed in steps/s'
@@ -179,11 +179,15 @@ try:
 
     print "Configuring stepper motor.."
     X = axis(spi, 0, 1)    # set Number of Steps per axis Unit and set Direction of Rotation
-    maximum_speed = X.MaxSpeed(100.0)
-    X.GetStatus()
+#    maximum_speed = X.MaxSpeed(100.0)
+    #X.GetStatus()
 
-    print "Motor speed limit is: %f steps/s" % maximum_speed
+#    print "Motor speed limit is: %f steps/s" % maximum_speed
     running = False
+
+    while True:
+        pass
+
 
     print "Waiting for IR command.."
     while True:                    # set maximal motor speed 
@@ -214,7 +218,7 @@ try:
             print "Motor running at: %f steps/s" % real_speed
         else:
             X.Reset()
-            X.Initialize()
+            #X.Initialize()
             X.Float(hard=False)   # release power
             print "Stopping the motor."
 
@@ -224,6 +228,6 @@ except KeyboardInterrupt:
     sys.exit(0)
 
 except Exception, e:
-    X.Float(hard=False)   # release power
+#    X.Float(hard=False)   # release power
     print >> sys.stderr, "Exception: %s" % str(e)
     sys.exit(1)
