@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 import sys
 import time
-import pymlab       # SPI binding
+from pymlab import config
 import pylirc       # infrared receiver binding
 
 #### Script Arguments ###############################################
