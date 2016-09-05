@@ -240,10 +240,6 @@ cfg = config.Config(
 
 cfg.initialize()
 
-print "Stepper motor control test started. \r\n"
-print "Max motor speed: %d " % SPEED
-print "Distance to run: %d " % DISTANCE
-
 spi = cfg.get_device("spi")
 
 spi.route()
