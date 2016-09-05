@@ -1,6 +1,7 @@
 use <src/sloupek.scad>
 use <src/plbase.scad>
 use <src/bocnice.scad>
+use <src/dno.scad>
 use <src/spodni_kryt.scad>
 use <src/otvory.scad>
 use <src/text/Write.scad>
@@ -15,7 +16,7 @@ barva_dno_bocnice = "cyan";
 barva_spodni_kryt = "green";
 barva_plbase_horni = "yellow";
 
-posuv_dilu=10; //pro složeni krabičky zadat 0 pro rozebrání zdat 10
+posuv_dilu=0; //pro složeni krabičky zadat 0 pro rozebrání zdat 10
 
 //BOCNICE SE DNEM
 //-------------------------------------------------------------
@@ -37,14 +38,21 @@ translate([0,0,vyska_bocnice/2-tloustka_plbase/2])
 
 //SPODNÍ KRYT
 //-------------------------------------------------------------
+/*
 translate([0,0,-5*posuv_dilu])
 color(barva_spodni_kryt)
 translate([0,0,-vyska_bocnice/2-2*tloustka_plbase])
     spodni_kryt(pocet_der1-1,pocet_der2-1,radidus_hrany,vzdalenost_der,vzdalenost_od_okraje,prumer_sroubu,vyska_bocnice,prekryti_der,tloustka_bocnice);
 
+*/
 
 
 
+
+translate([0,0,-5*posuv_dilu])
+color(barva_spodni_kryt)
+translate([0,0,-tloustka_plbase-dno_sila_materialu])
+   dno(pocet_der1-1,pocet_der2-1,radidus_hrany,vzdalenost_der,vzdalenost_od_okraje,prumer_sroubu,vyska_bocnice,prekryti_der,tloustka_bocnice);
 
 
 
