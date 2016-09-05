@@ -64,6 +64,23 @@ difference () {
     translate([-((pocet_der2)*vzdalenost_der)/2-vzdalenost_od_okraje+prumer_matice/2, (pocet_der1)*vzdalenost_der+vzdalenost_od_okraje-prumer_matice/2,vyska_bocnice/2-(vyska_matice+2*tloustka_bocnice+0.1)-tloustka_plbase])
         rotate(a=[0,0,270])
             sloupek ();
+ 
+//uchyt 1
+ translate([(-(pocet_der2)*vzdalenost_der)/2-vzdalenost_od_okraje-Uchyt_radius/2-Uchyt_x+0.5,-vzdalenost_od_okraje+vzdalenost_der/2,-vyska_bocnice/2-tloustka_plbase])
+uchyt();
+ 
+ //uchyt 2
+ translate([((pocet_der2)*vzdalenost_der)/2+vzdalenost_od_okraje+tloustka_bocnice+Uchyt_radius-0.5,-vzdalenost_od_okraje+vzdalenost_der/2,-vyska_bocnice/2-tloustka_plbase])
+uchyt();
+
+//uchyt 3
+ translate([(-(pocet_der2)*vzdalenost_der)/2-vzdalenost_od_okraje-Uchyt_radius/2-Uchyt_x+0.5,(pocet_der1)*vzdalenost_der+vzdalenost_od_okraje-Uchyt_y+Uchyt_radius-vzdalenost_der/2,-vyska_bocnice/2-tloustka_plbase])
+uchyt();
+ 
+ //uchyt 4
+ translate([((pocet_der2)*vzdalenost_der)/2+vzdalenost_od_okraje+tloustka_bocnice+Uchyt_radius-0.5,(pocet_der1)*vzdalenost_der+vzdalenost_od_okraje-Uchyt_y+Uchyt_radius-vzdalenost_der/2,-vyska_bocnice/2-tloustka_plbase])
+uchyt();
+ 
  }
 
 //----------------------------------------------------
@@ -90,6 +107,29 @@ translate([(5-(pocet_der2)*vzdalenost_der)/2,0,0])
 }
 
 
-   
 
+
+//uchyt();
+
+module uchyt(){
+    difference () {
+minkowski()
+    {
+	cube([Uchyt_x-2*Uchyt_radius,Uchyt_y-2*Uchyt_radius,Uchyt_vyska_mat+M3_vyska_hlavy]);          // base plastics brick
+        cylinder(r=Uchyt_radius,h=0.1);
+    }
+
+//otvor na hlavu
+translate([(Uchyt_x)/2-Uchyt_radius,(Uchyt_y)/2-Uchyt_radius,Uchyt_vyska_mat+M3_vyska_hlavy/2])  
+cylinder(h=M3_vyska_hlavy+0.6, r=M3_prumer_hlavy/2, center=true); 
     
+////otvor na sroub
+translate([(Uchyt_x)/2-Uchyt_radius,(Uchyt_y)/2-Uchyt_radius,(Uchyt_vyska_mat+M3_vyska_hlavy)/2])  
+cylinder(h=Uchyt_vyska_mat+M3_vyska_hlavy+0.6, r=M3_prumer/2, center=true);     
+    
+
+ }   
+  } 
+  
+  
+  
