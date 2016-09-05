@@ -1,9 +1,11 @@
 //Název boxu (zařízení)
-box_jmeno="BASEBOX02A";
+box_jmeno="CLOCKMOT01A";
 
 vzdalenost_der = 10.16; //rozteč děr mezi sebou
 radidus_hrany = 5; //radius zaobleni sloupku
-vzdalenost_od_okraje = 8.8; //vzdalenost stredu upevnovaci diry od kraje desky
+vzdalenost_od_okraje = 8.2; //vzdalenost stredu upevnovaci diry od kraje desky
+vzdalenost_od_okraje1 = 9.6;
+vzdalenost_od_okraje2 = 9.3;
 pocet_der1 = 11; //pocet děr v ose y
 pocet_der2 = 15; //pocet der v ose x
 
@@ -12,7 +14,7 @@ pocet_der2 = 15; //pocet der v ose x
 //OBECNE PARAMETRY KRABICKY
 //------------------------------------------------------------
 //BOCNICE
-vyska_bocnice=40;
+vyska_bocnice=50;
 tloustka_bocnice=3;
 
 
