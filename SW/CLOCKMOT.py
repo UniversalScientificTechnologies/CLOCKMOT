@@ -25,8 +25,6 @@ else:
     sys.stderr.write("Usage: %s BASE_SPEED (in steps/s)\n" % (sys.argv[0], ))
     sys.exit(1)
 
-
-
 # Begin of Class Axis --------------------------------------------------
 
 class axis:
@@ -93,8 +91,9 @@ class axis:
         spi.SPI_write_byte(self.CS, self.L6470_KVAL_DEC)      # KVAL_DEC
         spi.SPI_write_byte(self.CS, 0x58)
         spi.SPI_write_byte(self.CS, 0x18)      # CONFIG
-        spi.SPI_write_byte(self.CS, 0b00101110)
-        spi.SPI_write_byte(self.CS, 0b10000110)
+        spi.SPI_write_byte(self.CS, 0b00101110)			# spolecny byte pro obe konfigurace
+        spi.SPI_write_byte(self.CS, 0b10000000)			# konfigurace pro interni oscilator
+#        spi.SPI_write_byte(self.CS, 0b10000110)		# konfigurace s externim oscilatorem
         self.MaxSpeed(self.maxspeed)
 
     def setKVAL(self, hold = 0.5, run = 0.5, acc = 0.5, dec = 0.5):
@@ -103,8 +102,6 @@ class axis:
     def setOverCurrentTH(self, hold = 0.5, run = 0.5, acc = 0.5, dec = 0.5):
         """ The available range is from 375 mA to 6 A, in steps of 375 mA """
 
-
-      
     def MaxSpeed(self, speed):
         'Setup of maximum speed in steps/s. The available range is from 15.25 to 15610 step/s with a resolution of 15.25 step/s.'
         speed_value = int(speed / 15.25)
@@ -114,7 +111,6 @@ class axis:
             speed_value = 1023
 
         data = [(speed_value >> i & 0xff) for i in (8,0)]
-        print data
         spi.SPI_write_byte(self.CS, self.L6470_MAX_SPEED)       # Max Speed setup 
         spi.SPI_write_byte(self.CS, data[0])
         spi.SPI_write_byte(self.CS, data[1])
@@ -189,7 +185,6 @@ class axis:
 
     def Run(self, direction, speed):
         speed_value = int(speed / 0.015)
-        print hex(speed_value)
 
         command = 0b01010000 + int(direction)  
         data = [(speed_value >> i & 0xff) for i in (16,8,0)]
@@ -251,11 +246,10 @@ try:
     time.sleep(0.1)
 
     print "Configuring stepper motor.."
-    X = axis(spi.I2CSPI_SS0, 0, 1, MaxSpeed = SPEED)    # set Number of Steps per axis Unit and set Direction of Rotation
-#    maximum_speed = X.MaxSpeed(100.0)
-    #X.GetStatus()
+    X = axis(spi.I2CSPI_SS0, 0, 1, MaxSpeed = 2*SPEED)    # set Number of Steps per axis Unit and set Direction of Rotation
 
-#    print "Motor speed limit is: %f steps/s" % maximum_speed
+
+    print "Motor speed limit is: %f steps/s" % maximum_speed
     running = False
 
     print "Waiting for IR command.."
@@ -287,7 +281,7 @@ try:
             print "Motor running at: %f steps/s" % real_speed
         else:
             X.Reset()
-            #X.Initialize()
+            X.Initialize()
             X.Float(hard=False)   # release power
             print "Stopping the motor."
 
@@ -297,6 +291,6 @@ except KeyboardInterrupt:
     sys.exit(0)
 
 except Exception, e:
-#    X.Float(hard=False)   # release power
+    X.Float(hard=False)   # release power
     print >> sys.stderr, "Exception: %s" % str(e)
     sys.exit(1)
