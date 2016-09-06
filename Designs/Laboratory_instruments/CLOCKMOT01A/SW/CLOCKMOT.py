@@ -245,8 +245,10 @@ try:
     spi.SPI_config(spi.I2CSPI_MSB_FIRST| spi.I2CSPI_MODE_CLK_IDLE_HIGH_DATA_EDGE_TRAILING| spi.I2CSPI_CLK_461kHz)
     time.sleep(0.1)
 
+    maximum_speed = 2 * SPEED
+
     print "Configuring stepper motor.."
-    X = axis(spi.I2CSPI_SS0, 0, 1, MaxSpeed = 2*SPEED)    # set Number of Steps per axis Unit and set Direction of Rotation
+    X = axis(spi.I2CSPI_SS0, 0, 1, MaxSpeed = maximum_speed)    # set Number of Steps per axis Unit and set Direction of Rotation
 
 
     print "Motor speed limit is: %f steps/s" % maximum_speed
