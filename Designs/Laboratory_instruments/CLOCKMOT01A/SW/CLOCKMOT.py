@@ -7,8 +7,8 @@
 
 
 #uncomment for debbug purposes
-import logging
-logging.basicConfig(level=logging.DEBUG) 
+#import logging
+#logging.basicConfig(level=logging.DEBUG) 
 
 import sys
 import time
@@ -87,14 +87,14 @@ class axis:
         spi.SPI_write_byte(self.CS, 0x00)
         spi.SPI_write_byte(self.CS, 0x10) 
         spi.SPI_write_byte(self.CS, self.L6470_KVAL_RUN)      # KVAL_RUN
-        spi.SPI_write_byte(self.CS, 0x58)
+        spi.SPI_write_byte(self.CS, 0xF8)
         spi.SPI_write_byte(self.CS, self.L6470_KVAL_ACC)      # KVAL_ACC
-        spi.SPI_write_byte(self.CS, 0x58)
+        spi.SPI_write_byte(self.CS, 0xF8)
         spi.SPI_write_byte(self.CS, self.L6470_KVAL_DEC)      # KVAL_DEC
-        spi.SPI_write_byte(self.CS, 0x58)
-#        spi.SPI_write_byte(self.CS, 0x18)      # CONFIG
-#        spi.SPI_write_byte(self.CS, 0b00111000)
-#        spi.SPI_write_byte(self.CS, 0b00000000)
+        spi.SPI_write_byte(self.CS, 0xF8)
+        spi.SPI_write_byte(self.CS, 0x18)      # CONFIG
+        spi.SPI_write_byte(self.CS, 0b00101110)
+        spi.SPI_write_byte(self.CS, 0b10001000)
         self.MaxSpeed(self.maxspeed)
 
     def setKVAL(self, hold = 0.5, run = 0.5, acc = 0.5, dec = 0.5):
@@ -275,7 +275,7 @@ try:
         if key == ['slower']:
             running =  True
             direction = False
-            requested_speed = SPEED * 0.2
+            requested_speed = SPEED * 0.8
 
         if key == ['stop']:
             running =  False
