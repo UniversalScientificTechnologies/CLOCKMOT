@@ -282,9 +282,9 @@ try:
             real_speed = X.Run(direction, requested_speed)
             print "Motor running at: %f steps/s" % real_speed
         else:
+            X.Float(hard=False)   # release power
             X.Reset()
             X.Initialize()
-            X.Float(hard=False)   # release power
             print "Stopping the motor."
 
 except KeyboardInterrupt:
