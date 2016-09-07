@@ -44,7 +44,7 @@ Uchyt_x=13;
 Uchyt_y=10;
 
 dno_vyska_ramecku=9;
-dno_vule=0.6;
+dno_vule=1.0;
 dno_sila_materialu=4;
 dno_spodni_rantl=3;
 dno_vule_na_matky=0;
