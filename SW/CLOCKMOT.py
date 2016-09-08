@@ -85,11 +85,11 @@ class axis:
         spi.SPI_write_byte(self.CS, 0x00)
         spi.SPI_write_byte(self.CS, 0x10) 
         spi.SPI_write_byte(self.CS, self.L6470_KVAL_RUN)      # KVAL_RUN
-        spi.SPI_write_byte(self.CS, 0x58)
+        spi.SPI_write_byte(self.CS, 0x28)
         spi.SPI_write_byte(self.CS, self.L6470_KVAL_ACC)      # KVAL_ACC
-        spi.SPI_write_byte(self.CS, 0x58)
+        spi.SPI_write_byte(self.CS, 0x28)
         spi.SPI_write_byte(self.CS, self.L6470_KVAL_DEC)      # KVAL_DEC
-        spi.SPI_write_byte(self.CS, 0x58)
+        spi.SPI_write_byte(self.CS, 0x28)
         spi.SPI_write_byte(self.CS, 0x18)      # CONFIG
         spi.SPI_write_byte(self.CS, 0b00101110)			# spolecny byte pro obe konfigurace
         spi.SPI_write_byte(self.CS, 0b10000000)			# konfigurace pro interni oscilator
