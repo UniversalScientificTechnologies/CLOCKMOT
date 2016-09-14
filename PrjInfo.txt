@@ -1,0 +1,13 @@
+
+[InfoShortDescription.en]
+Universal clock machine
+
+[InfoShortDescription.cs]
+Univerzální hodinový stroj
+  
+[InfoLongDescription.en]
+Equipment for automatic monitoring of search object through binoculars. Remote control. For stepper motors up to 45 V and 3 A.
+
+[InfoLongDescription.cs]
+Zařízení pro automatické sledování vyhledaného objektu dalekohledem. Ovládání dálkovým ovladačem. Pro krokové motory do 45 V a 3 A. 
+[End]
