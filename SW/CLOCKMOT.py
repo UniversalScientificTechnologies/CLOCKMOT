@@ -80,10 +80,10 @@ class axis:
         spi.SPI_write_byte(self.CS, 0xFF) 
         spi.SPI_write_byte(self.CS, 0x05)      # ACC 
         spi.SPI_write_byte(self.CS, 0x00)
-        spi.SPI_write_byte(self.CS, 0x10) 
+        spi.SPI_write_byte(self.CS, 0x05) 
         spi.SPI_write_byte(self.CS, 0x06)      # DEC 
         spi.SPI_write_byte(self.CS, 0x00)
-        spi.SPI_write_byte(self.CS, 0x10) 
+        spi.SPI_write_byte(self.CS, 0x05) 
         spi.SPI_write_byte(self.CS, self.L6470_KVAL_RUN)      # KVAL_RUN
         spi.SPI_write_byte(self.CS, 0x18)
         spi.SPI_write_byte(self.CS, self.L6470_KVAL_ACC)      # KVAL_ACC
