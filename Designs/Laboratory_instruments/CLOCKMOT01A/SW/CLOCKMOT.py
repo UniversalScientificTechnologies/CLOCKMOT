@@ -283,7 +283,7 @@ try:
             print "Motor running at: %f steps/s" % real_speed
         else:
             X.Float(hard=False)   # release power
-            time.sleep(1.8)       # wait for motor stop
+            time.sleep(2.0)       # wait for motor stop
             X.Reset()
             X.Initialize()
             print "Stopping the motor."
